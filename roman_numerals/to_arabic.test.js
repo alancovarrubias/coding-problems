@@ -1,5 +1,5 @@
 const ROMAN_LETTERS = ["M", "D", "C", "L", "X", "V", "I"];
-const letterValueMapping = {
+const letterValues = {
   M: 1000,
   D: 500,
   C: 100,
@@ -8,7 +8,7 @@ const letterValueMapping = {
   V: 5,
   I: 1,
 };
-const letterPrefixMapping = {
+const letterPrefixes = {
   M: "C",
   D: "C",
   C: "X",
@@ -22,13 +22,13 @@ const calculateLetterValue = (roman, letter) => {
   const regex = new RegExp(letter, "g");
   const match = roman.match(regex);
   if (match) {
-    value += match.length * letterValueMapping[letter];
+    value += match.length * letterValues[letter];
     const lastIndex = roman.lastIndexOf(letter);
-    const prefix = letterPrefixMapping[letter];
+    const prefix = letterPrefixes[letter];
     const prefixRegex = new RegExp(prefix);
     const prefixMatches = roman.substring(0, lastIndex).match(prefixRegex);
     if (prefixMatches) {
-      value -= letterValueMapping[prefix];
+      value -= letterValues[prefix];
     }
   }
   return value;

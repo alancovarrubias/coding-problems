@@ -12,46 +12,44 @@
 //  the first is subtracted from the second;
 //  thus IV = 4, XL = 40, CM = 900.
 //
-
-const digitValue = {
-  1: "I",
-  10: "X",
-  100: "C",
-};
-
-const firstHalfMapping = {
-  1: "IV",
-  10: "XL",
-  100: "CD",
-};
-const secondHalfMapping = {
-  1: "IX",
-  10: "XC",
-  100: "CM",
-};
-
-const secondHalfPrefixMapping = {
+const secondHalfPrefixes = {
   1: "V",
   10: "L",
   100: "D",
 };
+const divisorValue = {
+  1: "I",
+  10: "X",
+  100: "C",
+};
+const firstHalfSpecial = {
+  1: "IV",
+  10: "XL",
+  100: "CD",
+};
+const secondHalfSpecial = {
+  1: "IX",
+  10: "XC",
+  100: "CM",
+};
 const charStringOfLength = (char, length) => {
   return new Array(length + 1).join(char);
+};
+const thousandsString = (n) => {
+  const thousandsDigit = Math.floor(n / 1000) % 10;
+  return charStringOfLength("M", thousandsDigit);
 };
 const divisorString = (n, divisor) => {
   const digit = Math.floor(n / divisor) % 10;
   const firstHalf = Math.floor(digit / 5) == 0;
   const halfRemainder = digit % 5;
-  if (halfRemainder === 4) {
-    return firstHalf ? firstHalfMapping[divisor] : secondHalfMapping[divisor];
+  const specialCase = halfRemainder === 4;
+  if (specialCase) {
+    return firstHalf ? firstHalfSpecial[divisor] : secondHalfSpecial[divisor];
   } else {
-    const prefix = firstHalf ? "" : secondHalfPrefixMapping[divisor];
-    return prefix + charStringOfLength(digitValue[divisor], halfRemainder);
+    const prefix = firstHalf ? "" : secondHalfPrefixes[divisor];
+    return prefix + charStringOfLength(divisorValue[divisor], halfRemainder);
   }
-};
-const thousandsString = (n) => {
-  const thousandsDigit = Math.floor(n / 1000) % 10;
-  return charStringOfLength("M", thousandsDigit);
 };
 const toRoman = (n) => {
   return (
@@ -62,7 +60,7 @@ const toRoman = (n) => {
   );
 };
 describe("toRoman", () => {
-  test("1-9", () => {
+  test("1-3", () => {
     expect(toRoman(1)).toBe("I");
     expect(toRoman(3)).toBe("III");
     expect(toRoman(4)).toBe("IV");

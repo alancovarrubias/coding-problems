@@ -1,67 +1,49 @@
+const ROMAN_LETTERS = ["M", "D", "C", "L", "X", "V", "I"];
+const letterValueMapping = {
+  M: 1000,
+  D: 500,
+  C: 100,
+  L: 50,
+  X: 10,
+  V: 5,
+  I: 1,
+};
+const letterPrefixMapping = {
+  M: "C",
+  D: "C",
+  C: "X",
+  L: "X",
+  X: "I",
+  V: "I",
+  I: null,
+};
+const calculateLetterValue = (roman, letter) => {
+  let value = 0;
+  const regex = new RegExp(letter, "g");
+  const match = roman.match(regex);
+  if (match) {
+    value += match.length * letterValueMapping[letter];
+    const lastIndex = roman.lastIndexOf(letter);
+    const prefix = letterPrefixMapping[letter];
+    const prefixRegex = new RegExp(prefix);
+    const prefixMatches = roman.substring(0, lastIndex).match(prefixRegex);
+    if (prefixMatches) {
+      value -= letterValueMapping[prefix];
+    }
+  }
+  return value;
+};
+const removeLetterFromRoman = (roman, letter) => {
+  const lastIndex = roman.lastIndexOf(letter);
+  return roman.substring(lastIndex + 1);
+};
 const toArabic = (roman) => {
   let value = 0;
-  const mMatch = roman.match(/M/g);
-  if (mMatch) {
-    value += mMatch.length * 1000;
-    const lastMIndex = roman.lastIndexOf("M");
-    const beforeMCMatches = roman.substring(0, lastMIndex).match(/C/);
-    if (beforeMCMatches) {
-      value -= 100;
-    }
-    roman = roman.substring(lastMIndex + 1);
+  for (let i = 0; i < ROMAN_LETTERS.length; i++) {
+    const letter = ROMAN_LETTERS[i];
+    value += calculateLetterValue(roman, letter);
+    roman = removeLetterFromRoman(roman, letter);
   }
-  const dMatch = roman.match(/D/g);
-  if (dMatch) {
-    value += dMatch.length * 500;
-    const lastDIndex = roman.lastIndexOf("D");
-    const beforeDCMatches = roman.substring(0, lastDIndex).match(/C/);
-    if (beforeDCMatches) {
-      value -= 100;
-    }
-    roman = roman.substring(lastDIndex + 1);
-  }
-  const cMatch = roman.match(/C/g);
-  if (cMatch) {
-    value += cMatch.length * 100;
-    const lastCIndex = roman.lastIndexOf("C");
-    const beforeCXMatches = roman.substring(0, lastCIndex).match(/X/);
-    if (beforeCXMatches) {
-      value -= 10;
-    }
-    roman = roman.substring(lastCIndex + 1);
-  }
-  const lMatch = roman.match(/L/g);
-  if (lMatch) {
-    value += lMatch.length * 50;
-    const lastLIndex = roman.lastIndexOf("L");
-    const beforeLXMatches = roman.substring(0, lastLIndex).match(/X/);
-    if (beforeLXMatches) {
-      value -= 10;
-    }
-    roman = roman.substring(lastLIndex + 1);
-  }
-  const xMatch = roman.match(/X/g);
-  if (xMatch) {
-    value += xMatch.length * 10;
-    const lastXIndex = roman.lastIndexOf("X");
-    const beforeXIMatches = roman.substring(0, lastXIndex).match(/I/);
-    if (beforeXIMatches) {
-      value -= 1;
-    }
-    roman = roman.substring(lastXIndex + 1);
-  }
-  const vMatch = roman.match(/V/g);
-  if (vMatch) {
-    value += vMatch.length * 5;
-    const firstVIndex = roman.indexOf("V");
-    const beforeVIMatches = roman.substring(0, firstVIndex).match(/I/);
-    if (beforeVIMatches) {
-      value -= 1;
-    }
-    const lastVIndex = roman.lastIndexOf("V");
-    roman = roman.substring(lastVIndex + 1);
-  }
-  value += roman.length;
   return value;
 };
 
